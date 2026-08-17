@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vishal &amp; Dharani — An Invitation</title>
+<meta name="description" content="Vishal & Dharani request the honour of your presence — Reception 29 August, Wedding 30 August 2026, Sree Varaaham A/C Mahal, Chennai.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"></div>
+
+<div class="petals" aria-hidden="true">
+  <span></span><span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<audio class="bg-audio" data-bg-audio loop preload="none">
+  <source src="../audio/wedding-music.mp3" type="audio/mpeg">
+</audio>
+
+<button type="button" class="sound-toggle" data-sound-toggle aria-label="Mute music" aria-pressed="true" hidden>
+  <svg class="sound-toggle__icon sound-toggle__icon--on" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+    <path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"/>
+    <path d="M16.3 8.7a5 5 0 0 1 0 6.6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </svg>
+  <svg class="sound-toggle__icon sound-toggle__icon--off" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+    <path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"/>
+    <path d="m15.5 9 5 6M20.5 9l-5 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<!-- ============ THE CARD ============ -->
+<section class="stage" data-stage>
+  <div class="scene" data-scene>
+    <div class="card" data-card>
+
+      <!-- the invitation, sitting inside the gatefold -->
+      <div class="card__inside">
+        <div class="inside__border" aria-hidden="true"></div>
+        <div class="inside__content" data-inside-content>
+          <p class="inside__pre">Together with our families</p>
+          <p class="inside__req">we request the honour of your presence</p>
+
+          <h1 class="inside__names">
+            <span class="inside__name">Vishal</span>
+            <span class="inside__amp">&amp;</span>
+            <span class="inside__name">Dharani</span>
+          </h1>
+
+          <div class="inside__rule" aria-hidden="true"><i></i><b>❦</b><i></i></div>
+
+          <div class="inside__events">
+            <div class="ev">
+              <p class="ev__label">Reception</p>
+              <p class="ev__date">Saturday, 29 August</p>
+              <p class="ev__time">7:00 PM onwards</p>
+            </div>
+            <div class="ev">
+              <p class="ev__label">Wedding</p>
+              <p class="ev__date">Sunday, 30 August</p>
+              <p class="ev__time">7:30 – 9:00 AM</p>
+            </div>
+          </div>
+
+          <p class="inside__year">MMXXVI &nbsp;·&nbsp; Chennai</p>
+        </div>
+      </div>
+
+      <!-- gatefold flaps -->
+      <div class="flap flap--l" data-flap>
+        <div class="flap__face flap__face--front">
+          <div class="foil" aria-hidden="true"></div>
+          <div class="flap__orn flap__orn--l" aria-hidden="true"></div>
+        </div>
+        <div class="flap__face flap__face--back"></div>
+      </div>
+      <div class="flap flap--r" data-flap>
+        <div class="flap__face flap__face--front">
+          <div class="foil" aria-hidden="true"></div>
+          <div class="flap__orn flap__orn--r" aria-hidden="true"></div>
+        </div>
+        <div class="flap__face flap__face--back"></div>
+      </div>
+
+      <!-- sheen that follows the tilt -->
+      <div class="sheen" data-sheen aria-hidden="true"></div>
+
+      <!-- wax seal -->
+      <div class="seal" data-seal role="button" tabindex="0" aria-label="Break the wax seal to open the invitation">
+        <div class="seal__wax seal__wax--l"><span>V<i>&amp;</i>D</span></div>
+        <div class="seal__wax seal__wax--r"><span>V<i>&amp;</i>D</span></div>
+        <div class="seal__crack" aria-hidden="true"></div>
+      </div>
+      <div class="burst" data-burst aria-hidden="true"></div>
+
+    </div>
+  </div>
+
+  <p class="hint" data-hint>
+    <span class="hint__main">Break the seal</span>
+    <span class="hint__sub" data-hint-sub>tilt your phone — it moves</span>
+  </p>
+</section>
+
+<!-- ============ AFTER OPENING ============ -->
+<main class="after" data-after hidden>
+
+  <p class="scrollcue" data-cue aria-hidden="true">
+    <span></span>
+  </p>
+
+  <!-- photos as tiltable prints -->
+  <section class="sec">
+    <p class="kicker">Us, lately</p>
+    <div class="prints">
+      <figure class="print reveal" data-tiltcard>
+        <img src="../images/photo-1.jpg" alt="Vishal and Dharani holding hands">
+        <figcaption>the quiet moment</figcaption>
+      </figure>
+      <figure class="print reveal" data-tiltcard>
+        <img src="../images/photo-2.jpg" alt="Vishal and Dharani at the reception">
+        <figcaption>all dressed up</figcaption>
+      </figure>
+      <figure class="print reveal" data-tiltcard>
+        <img src="../images/photo-3.jpg" alt="Vishal and Dharani cutting the cake">
+        <figcaption>cake, finally</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- countdown -->
+  <section class="sec sec--clock">
+    <p class="kicker kicker--c">Counting down</p>
+    <div class="clock" data-countdown="2026-08-29T19:00:00+05:30">
+      <div class="clock__u"><span class="clock__n" data-days>00</span><span class="clock__l">Days</span></div>
+      <div class="clock__u"><span class="clock__n" data-hours>00</span><span class="clock__l">Hours</span></div>
+      <div class="clock__u"><span class="clock__n" data-minutes>00</span><span class="clock__l">Minutes</span></div>
+      <div class="clock__u"><span class="clock__n" data-seconds>00</span><span class="clock__l">Seconds</span></div>
+    </div>
+  </section>
+
+  <!-- venue -->
+  <section class="sec">
+    <p class="kicker kicker--c">The place</p>
+    <div class="venue reveal" data-tiltcard>
+      <div class="venue__orn" aria-hidden="true">❦</div>
+      <h2 class="venue__name">Sree Varaaham<br>A/C Mahal</h2>
+      <p class="venue__addr">231, Jawaharlal Nehru Salai<br>Koyambedu, Chennai — 600107</p>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Sree+Varaaham+A%2FC+Mahal%2C+231+Jawaharlal+Nehru+Salai%2C+Koyambedu%2C+Chennai%2C+Tamil+Nadu+600107" target="_blank" rel="noopener">
+        Get directions
+        <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- stickers -->
+  <section class="sec sec--stickers">
+    <p class="kicker kicker--c">And because it's us</p>
+    <div class="tray">
+      <img src="../images/sticker-good-morning.png" alt="">
+      <img src="../images/sticker-too-cute.png" alt="">
+      <img src="../images/sticker-wow.png" alt="">
+      <img src="../images/sticker-approved.png" alt="">
+      <img src="../images/sticker-hey-you.png" alt="">
+      <img src="../images/sticker-so-sleepy.png" alt="">
+      <img src="../images/sticker-nice.png" alt="">
+      <img src="../images/sticker-good-night.png" alt="">
+    </div>
+  </section>
+
+  <!-- closing -->
+  <section class="sec sec--close">
+    <div class="close reveal">
+      <p class="close__msg">We'd love you there for all of it.</p>
+      <p class="close__names">Vishal &amp; Dharani</p>
+      <p class="close__date">29 – 30 August 2026</p>
+      <button type="button" class="btn btn--solid" data-add-calendar>Add to calendar</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Vishal &amp; Dharani &nbsp;·&nbsp; Chennai &nbsp;·&nbsp; 2026</p>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

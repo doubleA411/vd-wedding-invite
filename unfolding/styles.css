@@ -175,10 +175,13 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
   opacity:0;
 }
-.is-unfolded .inside__content{ animation:inside-in 1.5s var(--ease) .75s both; }
+/* A plain transition, not an animation with fill-mode. Relying on a fill to
+   hold opacity:1 over a base of 0 is fragile inside preserve-3d: iOS
+   re-composites on every tilt frame and can drop the fill, snapping the
+   content back toward transparent mid-tilt. This resolves to a real 1. */
+.is-unfolded .inside__content{ opacity:1; transition:opacity 1.1s var(--ease) .75s; }
 /* opacity only — animating transform here would freeze it at the animation's
    end value and the content would stop following the tilt afterwards */
-@keyframes inside-in{ from{ opacity:0; } to{ opacity:1; } }
 
 .inside__pre{
   font-family:var(--font-caps); font-size:.6rem; letter-spacing:.28em;
@@ -289,10 +292,15 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
     transparent 66%
   );
   background-size:280% 100%;
+  /* background-position is --tx-driven, so no transition on it (same reason as
+     the tilt transforms) — the rAF lerp is already the smoothing */
   background-position:calc(50% + var(--tx) * 46%) 0;
-  transition:background-position .35s var(--ease-soft), opacity .8s var(--ease-soft);
+  transition:opacity .8s var(--ease-soft);
 }
-.is-unfolded .sheen{ opacity:0; }
+/* also visibility:hidden — at opacity 0 it is still a composited layer with
+   overflow:hidden sitting directly on the card face, repainting every tilt
+   frame for nothing */
+.is-unfolded .sheen{ opacity:0; visibility:hidden; }
 
 /* ---- wax seal ---- */
 .seal{

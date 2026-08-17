@@ -7,6 +7,7 @@
   const bgAudio = document.querySelector('[data-bg-audio]');
   const soundToggle = document.querySelector('[data-sound-toggle]');
   let startMusic = () => {};
+  let requestGyro = () => {};   // assigned by the tilt engine below
   if (bgAudio && soundToggle){
     bgAudio.volume = 0.5;
     const setMuted = (muted) => {
@@ -16,7 +17,6 @@
       soundToggle.setAttribute('aria-pressed', String(!muted));
     };
     setMuted(false);
-    soundToggle.hidden = false;
     soundToggle.addEventListener('click', () => {
       const next = !bgAudio.muted;
       setMuted(next);
@@ -24,6 +24,7 @@
     });
 
     startMusic = () => {
+      soundToggle.hidden = false;
       const p = bgAudio.play();
       if (!p || !p.catch) return;
       // The clip is muted so it opens on its own, but no browser will autoplay
@@ -40,11 +41,15 @@
     };
   }
 
-  /* ---- Hero: opens on load ---- */
+  /* ---- Hero: opens on the guest's tap ----
+     Mobile browsers will not autoplay this reliably — iOS Low Power Mode
+     blocks even muted inline video — so the clip, the music and the iOS
+     motion grant all hang off this one gesture. ---- */
   const hero = document.querySelector('[data-hero]');
   if (hero){
     const video = hero.querySelector('[data-hero-video]');
-    let revealed = false;
+    const tapBtn = hero.querySelector('[data-hero-tap]');
+    let opened = false, revealed = false;
 
     // Matches the longest .reveal-up delay — the scroll cue at 2.4s — plus its
     // .9s animation, so the whole chain finishes as the clip reaches its final
@@ -58,11 +63,21 @@
     };
 
     function openInvite(){
+      if (opened) return;
+      opened = true;
+      if (tapBtn) tapBtn.disabled = true;
+      hero.classList.add('hero--playing');
+
       startMusic();
+      requestGyro();   // iOS grants motion only from inside this gesture
 
       if (!video || reduceMotion){ revealNames(); return; }
 
-      const finish = () => { try { video.pause(); } catch(e){} revealNames(); };
+      // Hold the closing frame, but only when the clip genuinely reaches it.
+      video.addEventListener('ended', () => {
+        try { video.pause(); } catch(e){}
+        revealNames();
+      }, { once: true });
 
       const onTime = () => {
         const lead = video.duration ? video.duration - REVEAL_LEAD_SECONDS : 0;
@@ -72,20 +87,25 @@
         }
       };
       video.addEventListener('timeupdate', onTime);
-      video.addEventListener('ended', finish, { once: true });
-      // A decode error, a blocked autoplay, or a slow connection — never strand
-      // the guest staring at a still poster with no names on it.
-      video.addEventListener('error', finish, { once: true });
-      // Guarded on currentTime as well as the event, so a 'playing' that fires
-      // before this handler attaches can't pause a clip that is running fine.
-      const stall = setTimeout(() => { if (!revealed && !video.currentTime) finish(); }, 4500);
+
+      // A decode error or a missing file: show the names rather than strand the
+      // guest on a still poster. Reveal only — never pause.
+      video.addEventListener('error', revealNames, { once: true });
+
+      // Slow connection. This reveals the names so the invitation is readable,
+      // and deliberately does NOT pause: pausing here is what left the clip
+      // dead on mobile data, because it fired before the clip had buffered and
+      // the video then stayed paused once it finally could have played.
+      const stall = setTimeout(revealNames, 6000);
       video.addEventListener('playing', () => clearTimeout(stall), { once: true });
 
+      video.muted = true;   // Safari checks the property, not just the attribute
       const p = video.play();
-      if (p && p.catch) p.catch(() => { clearTimeout(stall); finish(); });
+      if (p && p.catch) p.catch(() => { clearTimeout(stall); revealNames(); });
     }
 
-    openInvite();
+    if (tapBtn) tapBtn.addEventListener('click', openInvite);
+    else openInvite();
   }
 
   /* ---- Hero tilt: gyroscope on phones, pointer on desktop ----
@@ -177,20 +197,15 @@
 
     const DOE = window.DeviceOrientationEvent;
     if (DOE && typeof DOE.requestPermission === 'function'){
-      // iOS 13+ grants only from inside a user gesture, and the tap-to-open
-      // button that used to supply one is gone. Borrow the guest's first real
-      // interaction instead. Note wheel and scroll do NOT count as activation,
-      // so this deliberately listens for the pointer/key events that do.
-      const acts = ['pointerdown', 'touchend', 'keydown'];
-      const ask = () => {
-        acts.forEach((ev) => window.removeEventListener(ev, ask));
+      // iOS 13+ grants only from inside a user gesture. openInvite() calls this
+      // synchronously from the Tap to Open handler, which is that gesture.
+      requestGyro = () => {
         DOE.requestPermission()
           .then((state) => { if (state === 'granted') startGyro(); })
           .catch(() => {});
       };
-      acts.forEach((ev) => window.addEventListener(ev, ask));
     } else {
-      startGyro();
+      startGyro();   // Android and desktop need no grant
     }
 
     // Recentre if the phone is picked up at a different angle.

@@ -152,6 +152,34 @@ button{ font:inherit; color:inherit; }
   filter:blur(30px);
 }
 
+/* The one user gesture the hero depends on. Mobile browsers refuse to autoplay
+   (iOS Low Power Mode blocks even muted inline video), audible music needs a
+   gesture, and iOS grants motion access only from inside one — this button
+   supplies all three at once. */
+.hero__tap{
+  position:absolute; inset:0; z-index:4; width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem;
+  background:none; border:none; cursor:pointer; color:var(--gold-pale);
+  transition:opacity .6s var(--ease);
+}
+.hero--playing .hero__tap{ opacity:0; pointer-events:none; }
+.hero__tap-blip{ position:relative; width:64px; height:64px; }
+.hero__tap-blip::before{
+  content:''; position:absolute; inset:0; border-radius:50%;
+  background:radial-gradient(closest-side, rgb(var(--marigold-rgb) / .9), rgb(var(--marigold-rgb) / .1));
+}
+.hero__tap-blip::after{
+  content:'♥'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; color:#fff;
+}
+.hero__tap-ring{
+  position:absolute; inset:0; border-radius:50%; border:1.5px solid rgb(var(--teal-soft-rgb) / .7);
+  animation:tap-ring 2.4s ease-out infinite;
+}
+.hero__tap-ring--b{ animation-delay:1.2s; }
+@keyframes tap-ring{ 0%{ transform:scale(.9); opacity:.9; } 100%{ transform:scale(1.9); opacity:0; } }
+.hero__tap-label{ font-family:var(--font-caps); font-size:.7rem; letter-spacing:.24em; text-transform:uppercase; }
+
 /* Tilt target. A plain 2D translate on purpose: a 3D transform (or a
    will-change) promotes this to its own layer, and iOS re-rasterises the
    script faces blurry once it does. No transition either — script.js eases

@@ -171,7 +171,11 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
 .inside__content{
   position:relative; z-index:2;
   padding:1.6rem 1.3rem; text-align:center; color:var(--paper-ink);
-  transform:translate3d(calc(var(--tx) * 14px), calc(var(--ty) * 14px), 26px);
+  /* Deliberately 2D. The parent .card__inside is transform-style:flat, so a
+     translateZ here was flattened and added no depth at all — it only forced
+     a 3D compositing layer, and iOS drops the text on that layer while the
+     card rotates. The parallax below is the same distance, minus the bug. */
+  transform:translate(calc(var(--tx) * 14px), calc(var(--ty) * 14px));
   /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
   opacity:0;
 }

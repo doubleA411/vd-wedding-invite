@@ -144,7 +144,10 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
     rotateX(calc(var(--ty) * -13deg))
     translate3d(calc(var(--tx) * 5px), calc(var(--ty) * 5px), 0);
   transition:transform .35s var(--ease-soft);
-  filter:drop-shadow(0 34px 46px rgba(0,0,0,.62));
+  /* No filter here. A non-none filter forces transform-style to flat, which
+     would collapse this card's 3D context — the seal's translateZ, the
+     content's depth and the flaps all lose their layering. The drop shadow
+     lives on the visible surfaces below as box-shadow instead. */
 }
 
 /* ---- inside: the invitation itself ---- */
@@ -155,7 +158,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   border-radius:3px;
   overflow:hidden;
   display:flex; align-items:center; justify-content:center;
-  box-shadow:inset 0 0 40px rgba(122,32,54,.09);
+  box-shadow:inset 0 0 40px rgba(122,32,54,.09), 0 34px 46px -12px rgba(0,0,0,.62);
 }
 .inside__border{
   position:absolute; inset:9px;
@@ -232,7 +235,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
 .flap__face--front{
   background:
     linear-gradient(160deg, var(--maroon-lift) 0%, var(--maroon) 46%, var(--maroon-deep) 100%);
-  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3);
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.3), 0 30px 44px -14px rgba(0,0,0,.6);
 }
 .flap--l .flap__face--front{ border-radius:3px 0 0 3px; }
 .flap--r .flap__face--front{ border-radius:0 3px 3px 0; }
@@ -365,6 +368,19 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
 }
 @keyframes hint-pulse{ 0%,100%{ opacity:.45; } 50%{ opacity:1; } }
 .hint.is-gone{ opacity:0; pointer-events:none; }
+
+/* shown only when motion access is unavailable, so the tilt promise above
+   is never left dangling with no way to act on it */
+.tiltbtn{
+  position:relative; z-index:3; margin-top:-.6rem;
+  padding:.5rem 1rem; border-radius:999px; cursor:pointer;
+  background:rgba(201,162,39,.1); border:1px solid rgba(201,162,39,.4);
+  color:var(--gold-hi);
+  font-family:var(--font-caps); font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase;
+  transition:background .25s var(--ease-soft), transform .2s var(--ease);
+}
+.tiltbtn:hover{ background:rgba(201,162,39,.2); transform:translateY(-1px); }
 
 /* =========================================================
    AFTER OPENING

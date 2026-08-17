@@ -66,10 +66,33 @@
       .catch(() => {});
   }
 
-  // Where no grant is needed the tilt is live immediately, so the closed card
-  // already responds. On iOS the prompt is deferred to the opening gesture —
-  // asking on the guest's first tap would swallow the tap that opens the card.
+  // Where no grant is needed, tilt is live immediately so the closed card
+  // already responds. iOS is asked from the seal's pointerdown instead.
   if (!needsGrant) requestGyro();
+
+  // If tilt never comes alive on a touch device, stop advertising it and offer
+  // an explicit opt-in — motion access can also be switched off in iOS
+  // Settings, where no amount of asking from the page will help.
+  const tiltBtn = document.querySelector('[data-tilt-enable]');
+  const hintSub = document.querySelector('[data-hint-sub]');
+  const isTouch = matchMedia('(hover: none)').matches;
+  if (isTouch && !reduceMotion){
+    setTimeout(() => {
+      if (tiltAlive) return;
+      if (hintSub) hintSub.textContent = 'press it to open';
+      if (tiltBtn){
+        tiltBtn.hidden = false;
+        tiltBtn.addEventListener('click', () => {
+          askedGyro = false;              // allow a fresh prompt
+          requestGyro();
+          tiltBtn.hidden = true;
+          setTimeout(() => {
+            if (tiltAlive && hintSub) hintSub.textContent = 'tilt your phone — it moves';
+          }, 900);
+        });
+      }
+    }, 2200);
+  }
 
   // Recentre the neutral position if the phone is set down differently
   window.addEventListener('orientationchange', () => { baseBeta = null; baseGamma = null; });
@@ -157,6 +180,11 @@
     // move/up live on window, not the seal, for the same reason.
     seal.addEventListener('pointerdown', (e) => {
       if (broken) return;
+      // Must be called synchronously here: iOS only grants motion access from
+      // inside a real user gesture, and open() often runs from the press timer
+      // below, where the request would be rejected. The timer means the card
+      // still opens even if the permission dialog eats the rest of the tap.
+      requestGyro();
       dragging = true; moved = 0;
       sx = e.clientX; sy = e.clientY;
       seal.classList.add('is-dragging');

@@ -45,9 +45,9 @@
   // is being held rather than assuming it is face-up.
   let baseBeta = null, baseGamma = null;
   let fBeta = 0, fGamma = 0;        // low-pass filtered sensor values
-  const RANGE = 42;                 // degrees mapping to full deflection
+  const RANGE = 26;                 // degrees mapping to full deflection
   const SENSOR_EASE = 0.25;         // tames raw sensor noise before it's used
-  const RECENTRE = 0.0015;          // slow drift back so it can never stick
+  const RECENTRE = 0.0005;          // gentle drift so a held angle doesn't stick
 
   function readOrient(e){
     if (e.beta === null || e.gamma === null) return;
@@ -189,6 +189,8 @@
 
     // seal falls away, then the gatefold swings open
     setTimeout(() => card.classList.add('is-unfolded'), 380);
+    // retire the flaps once the fold finishes (see .flaps-done in the CSS)
+    setTimeout(() => card.classList.add('flaps-done'), reduceMotion ? 0 : 2000);
     if (hint) hint.classList.add('is-gone');
 
     // release the page once the card has finished opening

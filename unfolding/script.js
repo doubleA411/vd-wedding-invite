@@ -12,13 +12,20 @@
      ========================================================= */
   let targetX = 0, targetY = 0;
   let curX = 0, curY = 0;
+  let lastX = 0, lastY = 0;
   let tiltAlive = false;
 
+  const EASE = 0.16;      // single smoothing stage — the CSS no longer transitions
+  const DEADZONE = 0.002; // don't repaint for movement nobody can see
+
   function loop(){
-    curX += (targetX - curX) * 0.08;
-    curY += (targetY - curY) * 0.08;
-    root.style.setProperty('--tx', curX.toFixed(4));
-    root.style.setProperty('--ty', curY.toFixed(4));
+    curX += (targetX - curX) * EASE;
+    curY += (targetY - curY) * EASE;
+    if (Math.abs(curX - lastX) > DEADZONE || Math.abs(curY - lastY) > DEADZONE){
+      lastX = curX; lastY = curY;
+      root.style.setProperty('--tx', curX.toFixed(3));
+      root.style.setProperty('--ty', curY.toFixed(3));
+    }
     requestAnimationFrame(loop);
   }
   if (!reduceMotion) requestAnimationFrame(loop);
@@ -37,19 +44,46 @@
   // The first reading becomes "level", so it works however the phone
   // is being held rather than assuming it is face-up.
   let baseBeta = null, baseGamma = null;
-  const RANGE = 26; // degrees of tilt that map to full deflection
+  let fBeta = 0, fGamma = 0;        // low-pass filtered sensor values
+  const RANGE = 42;                 // degrees mapping to full deflection
+  const SENSOR_EASE = 0.25;         // tames raw sensor noise before it's used
+  const RECENTRE = 0.0015;          // slow drift back so it can never stick
 
-  function onOrient(e){
+  function readOrient(e){
     if (e.beta === null || e.gamma === null) return;
-    if (baseBeta === null){ baseBeta = e.beta; baseGamma = e.gamma; return; }
-    targetX = clamp((e.gamma - baseGamma) / RANGE, -1, 1);
-    targetY = clamp((e.beta - baseBeta) / RANGE, -1, 1);
+
+    // Landscape swaps what beta and gamma mean; without this the axes invert.
+    const angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+    let beta = e.beta, gamma = e.gamma;
+    if (angle === 90){ const t = beta; beta = -gamma; gamma = t; }
+    else if (angle === -90 || angle === 270){ const t = beta; beta = gamma; gamma = -t; }
+    else if (Math.abs(angle) === 180){ beta = -beta; gamma = -gamma; }
+
+    if (baseBeta === null){
+      baseBeta = beta; baseGamma = gamma;
+      fBeta = beta; fGamma = gamma;
+      return;
+    }
+
+    // smooth the sensor itself — iOS reports a noisy signal
+    fBeta  += (beta  - fBeta)  * SENSOR_EASE;
+    fGamma += (gamma - fGamma) * SENSOR_EASE;
+
+    // let the neutral point creep toward how the phone is actually being held,
+    // so holding it at an angle doesn't pin the card to one side
+    baseBeta  += (fBeta  - baseBeta)  * RECENTRE;
+    baseGamma += (fGamma - baseGamma) * RECENTRE;
+
+    targetX = clamp((fGamma - baseGamma) / RANGE, -1, 1);
+    targetY = clamp((fBeta  - baseBeta)  / RANGE, -1, 1);
     tiltAlive = true;
   }
 
   function startGyro(){
     if (reduceMotion) return;
-    window.addEventListener('deviceorientation', onOrient, { passive: true });
+    window.addEventListener('deviceorientation', readOrient, { passive: true });
+    // Some Android devices only populate the absolute variant.
+    window.addEventListener('deviceorientationabsolute', readOrient, { passive: true });
   }
 
   // iOS 13+ needs an explicit grant, and only from inside a user gesture.

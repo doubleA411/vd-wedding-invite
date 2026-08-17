@@ -69,7 +69,7 @@ button{ font:inherit; color:inherit; }
   background:radial-gradient(closest-side at 50% 34%, rgba(201,162,39,.16), transparent 66%);
   filter:blur(30px);
   transform:translate3d(calc(var(--tx) * -14px), calc(var(--ty) * -14px), 0);
-  transition:transform .5s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
 }
 
 /* ---- falling petals ---- */
@@ -143,7 +143,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
     rotateY(calc(var(--tx) * 13deg))
     rotateX(calc(var(--ty) * -13deg))
     translate3d(calc(var(--tx) * 5px), calc(var(--ty) * 5px), 0);
-  transition:transform .35s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
   /* No filter here. A non-none filter forces transform-style to flat, which
      would collapse this card's 3D context — the seal's translateZ, the
      content's depth and the flaps all lose their layering. The drop shadow
@@ -170,7 +170,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   position:relative; z-index:2;
   padding:1.6rem 1.3rem; text-align:center; color:var(--paper-ink);
   transform:translate3d(calc(var(--tx) * 7px), calc(var(--ty) * 7px), 26px);
-  transition:transform .4s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
   opacity:0;
 }
 .is-unfolded .inside__content{ animation:inside-in 1.5s var(--ease) .75s both; }
@@ -293,7 +293,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   width:84px; height:84px; margin:-42px 0 0 -42px;
   cursor:grab; touch-action:none;
   transform:translate3d(calc(var(--tx) * 10px), calc(var(--ty) * 10px), 34px);
-  transition:transform .3s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
 }
 .seal:active{ cursor:grabbing; }
 .seal.is-dragging{ transition:none; }
@@ -424,7 +424,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   transform:
     rotateY(calc(var(--tx) * 7deg))
     rotateX(calc(var(--ty) * -7deg));
-  transition:transform .4s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
 }
 .print figcaption{
   font-family:var(--font-body); font-style:italic; font-size:.95rem;
@@ -461,7 +461,7 @@ body.is-open .stage{ /* stays as the first screen; scroll moves past it */ }
   border:1px solid rgba(201,162,39,.3); border-radius:3px;
   box-shadow:0 26px 50px -24px rgba(0,0,0,.75);
   transform:rotateY(calc(var(--tx) * 5deg)) rotateX(calc(var(--ty) * -5deg));
-  transition:transform .4s var(--ease-soft);
+  /* no transition: --tx/--ty update every frame; the rAF lerp smooths it */
 }
 .venue__orn{ color:var(--gold); font-size:.8rem; margin-bottom:1rem; }
 /* Cinzel, not the script face — Pinyon's decorative capital S reads as an F,
